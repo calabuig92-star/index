@@ -1,0 +1,65 @@
+{%- comment -%}
+  Parámetros: product, printing_info, shipping_info, returns_info (richtext de la sección)
+{%- endcomment -%}
+{%- liquid
+  assign artwork = product.metafields.custom.artwork.value
+  assign story = artwork.story
+  if story == blank
+    assign story = product.description
+  endif
+  assign material = product.metafields.custom.print_material.value
+  if material == blank
+    assign material = artwork.medium
+  endif
+  assign dimensions = artwork.original_dimensions
+-%}
+<div class="accordion product-accordion">
+  {%- if story != blank or artwork.year != blank or artwork.medium != blank or artwork.subject != blank -%}
+    <details class="accordion__item">
+      <summary class="accordion__summary">{{ 'products.product.details' | t }}</summary>
+      <div class="accordion__content">
+        {%- if story != blank -%}<div>{{ story }}</div>{%- endif -%}
+        <dl class="product-accordion__facts">
+          {%- if artwork.year != blank -%}<dt>{{ 'products.product.year' | t }}</dt><dd>{{ artwork.year }}</dd>{%- endif -%}
+          {%- if artwork.medium != blank -%}<dt>{{ 'products.product.medium' | t }}</dt><dd>{{ artwork.medium }}</dd>{%- endif -%}
+          {%- if artwork.subject != blank -%}<dt>{{ 'products.product.subject' | t }}</dt><dd>{{ artwork.subject }}</dd>{%- endif -%}
+        </dl>
+      </div>
+    </details>
+  {%- endif -%}
+
+  {%- if material != blank -%}
+    <details class="accordion__item">
+      <summary class="accordion__summary">{{ 'products.product.materials' | t }}</summary>
+      <div class="accordion__content"><p>{{ material }}</p></div>
+    </details>
+  {%- endif -%}
+
+  {%- if dimensions != blank -%}
+    <details class="accordion__item">
+      <summary class="accordion__summary">{{ 'products.product.size_guide' | t }}</summary>
+      <div class="accordion__content"><p>{{ 'products.product.original_dimensions' | t }}: {{ dimensions }}</p></div>
+    </details>
+  {%- endif -%}
+
+  {%- if printing_info != blank -%}
+    <details class="accordion__item">
+      <summary class="accordion__summary">{{ 'products.product.printing' | t }}</summary>
+      <div class="accordion__content">{{ printing_info }}</div>
+    </details>
+  {%- endif -%}
+
+  {%- if shipping_info != blank -%}
+    <details class="accordion__item">
+      <summary class="accordion__summary">{{ 'products.product.shipping' | t }}</summary>
+      <div class="accordion__content">{{ shipping_info }}</div>
+    </details>
+  {%- endif -%}
+
+  {%- if returns_info != blank -%}
+    <details class="accordion__item">
+      <summary class="accordion__summary">{{ 'products.product.returns' | t }}</summary>
+      <div class="accordion__content">{{ returns_info }}</div>
+    </details>
+  {%- endif -%}
+</div>

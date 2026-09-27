@@ -1,0 +1,67 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero-art",
+      "settings": {}
+    },
+    "featured_collection": {
+      "type": "featured-collection",
+      "settings": {}
+    },
+    "shop_by_type": {
+      "type": "shop-by-type",
+      "settings": {},
+      "blocks": {
+        "originals": {
+          "type": "type_tile",
+          "settings": {
+            "title": "Originales",
+            "subtitle": "Pieza única, firmada",
+            "link": "/collections/originals"
+          }
+        },
+        "prints": {
+          "type": "type_tile",
+          "settings": {
+            "title": "Fine Art Prints",
+            "subtitle": "Edición cuidada bajo demanda",
+            "link": "/collections/fine-art-prints"
+          }
+        }
+      },
+      "block_order": ["originals", "prints"]
+    },
+    "art_in_room": {
+      "type": "art-in-room",
+      "settings": {}
+    },
+    "collection_story": {
+      "type": "collection-story",
+      "settings": {}
+    },
+    "about_preview": {
+      "type": "about-preview",
+      "settings": {}
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {}
+    },
+    "journal": {
+      "type": "journal-grid",
+      "settings": {
+        "blog": "journal"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "featured_collection",
+    "shop_by_type",
+    "art_in_room",
+    "collection_story",
+    "about_preview",
+    "newsletter",
+    "journal"
+  ]
+}

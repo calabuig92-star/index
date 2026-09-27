@@ -1,0 +1,46 @@
+{%- if product -%}
+  <div
+    class="related-artworks section-padding bg-alt"
+    data-product-recommendations
+    data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ section.settings.products_to_show }}&intent=related"
+  >
+    {%- if recommendations.performed and recommendations.products_count > 0 -%}
+      <div class="container">
+        <div class="section-heading">
+          <h2>{{ 'products.product.related_heading' | t }}</h2>
+        </div>
+        <div class="grid grid--4">
+          {%- for related in recommendations.products -%}
+            {%- render 'product-card', product: related -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+{%- endif -%}
+
+{%- javascript -%}
+(function () {
+  document.querySelectorAll('[data-product-recommendations]').forEach(function (el) {
+    fetch(el.getAttribute('data-url'))
+      .then(function (res) { return res.text(); })
+      .then(function (html) {
+        var doc = new DOMParser().parseFromString(html, 'text/html');
+        var content = doc.querySelector('[data-product-recommendations]');
+        if (content && content.innerHTML.trim() !== '') {
+          el.innerHTML = content.innerHTML;
+        }
+      })
+      .catch(function () {});
+  });
+})();
+{%- endjavascript -%}
+
+{% schema %}
+{
+  "name": "Obras relacionadas",
+  "settings": [
+    { "type": "range", "id": "products_to_show", "label": "Nº de obras", "min": 2, "max": 8, "step": 1, "default": 4 }
+  ]
+}
+{% endschema %}

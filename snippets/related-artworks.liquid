@@ -1,0 +1,20 @@
+{%- comment -%} Parámetro requerido: product — obras de la misma colección {%- endcomment -%}
+{%- liquid
+  assign source_collection = product.collections.first
+-%}
+{%- if source_collection and source_collection.products.size > 1 -%}
+  <div class="related-artworks section-padding">
+    <div class="section-heading">
+      <h2>{{ 'products.product.same_collection_heading' | t }}</h2>
+    </div>
+    <div class="grid grid--4">
+      {%- assign shown = 0 -%}
+      {%- for related in source_collection.products -%}
+        {%- if related.id != product.id and shown < 4 -%}
+          {%- render 'product-card', product: related -%}
+          {%- assign shown = shown | plus: 1 -%}
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+{%- endif -%}

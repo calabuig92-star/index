@@ -1,0 +1,97 @@
+{%- liquid
+  assign hero_image = section.settings.image | default: collection.featured_image
+  assign story = section.settings.story
+  if story == blank
+    assign story = collection.metafields.custom.inspiration.value
+  endif
+  if story == blank
+    assign story = collection.description
+  endif
+  assign palette = collection.metafields.custom.palette.value
+  assign per_page = section.settings.products_per_page
+-%}
+<div class="collection-series">
+
+  {%- if hero_image -%}
+    <div class="collection-series__hero media media--landscape">
+      <img src="{{ hero_image | image_url: width: 1800 }}" alt="{{ collection.title | escape }}" loading="eager" fetchpriority="high" width="1800" height="{{ 1800 | divided_by: hero_image.aspect_ratio | default: 900 }}">
+    </div>
+  {%- endif -%}
+
+  <div class="container section-padding">
+    <div class="collection-series__intro">
+      <h1>{{ collection.title }}{% if section.settings.year != blank %} <span class="collection-series__year">— {{ section.settings.year }}</span>{% endif %}</h1>
+      {%- if story != blank -%}
+        <div class="collection-series__story">{{ story }}</div>
+      {%- endif -%}
+      {%- if palette != blank -%}
+        <ul class="collection-series__palette">
+          {%- for color in palette -%}
+            <li style="background-color:{{ color }};" title="{{ color }}"></li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+
+    {%- liquid
+      assign midpoint = collection.products.size | divided_by: 2
+      if midpoint == 0
+        assign midpoint = 1
+      endif
+    -%}
+    {%- paginate collection.products by per_page -%}
+      {%- if collection.products.size > 0 -%}
+        <div class="grid grid--4">
+          {%- for product in collection.products -%}
+            {%- render 'product-card', product: product -%}
+            {%- if section.settings.editorial_image and forloop.index == midpoint -%}
+              <div class="collection-series__editorial media media--portrait">
+                <img src="{{ section.settings.editorial_image | image_url: width: 700 }}" alt="" loading="lazy" width="700" height="{{ 700 | divided_by: section.settings.editorial_image.aspect_ratio | default: 875 }}">
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+        {{ paginate | default_pagination }}
+      {%- else -%}
+        <div class="empty-state">{{ 'collections.general.empty' | t }}</div>
+      {%- endif -%}
+    {%- endpaginate -%}
+
+    {%- if section.settings.journal_link != blank -%}
+      <div class="collection-series__journal-cta">
+        <a href="{{ section.settings.journal_link }}" class="button button--secondary">
+          {{- section.settings.journal_label | default: section.settings.journal_link -}}
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{%- stylesheet -%}
+.collection-series__hero{margin-bottom:2.5rem;}
+.collection-series__intro{max-width:680px;margin:0 auto 3rem;text-align:center;}
+.collection-series__year{color:var(--color-text-muted);font-family:var(--font-body-family);font-size:.6em;font-weight:400;}
+.collection-series__story{color:var(--color-text-muted);margin-top:1em;}
+.collection-series__palette{list-style:none;display:flex;gap:.5rem;justify-content:center;margin-top:1.25rem;}
+.collection-series__palette li{width:22px;height:22px;border-radius:50%;border:1px solid rgba(0,0,0,.08);}
+.collection-series__editorial{grid-column:1 / -1;}
+@media (min-width:700px){
+  .collection-series__editorial{max-width:520px;margin:0 auto;}
+}
+.collection-series__journal-cta{text-align:center;margin-top:3.5rem;}
+{%- endstylesheet -%}
+
+{% schema %}
+{
+  "name": "Colección — Serie artística",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Imagen de cabecera (si no, usa la imagen de la colección)" },
+    { "type": "text", "id": "year", "label": "Año" },
+    { "type": "richtext", "id": "story", "label": "Texto conceptual (si no, usa el metafield inspiration o la descripción)" },
+    { "type": "image_picker", "id": "editorial_image", "label": "Imagen editorial intercalada" },
+    { "type": "range", "id": "products_per_page", "label": "Obras por página", "min": 8, "max": 48, "step": 4, "default": 24 },
+    { "type": "url", "id": "journal_link", "label": "Enlace a artículo del Journal" },
+    { "type": "text", "id": "journal_label", "label": "Texto del enlace al Journal", "default": "Leer el proceso de esta colección" }
+  ]
+}
+{% endschema %}

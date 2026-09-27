@@ -1,0 +1,48 @@
+<section class="featured-collection section-padding{% if section.settings.background == 'alt' %} bg-alt{% endif %}">
+  <div class="container">
+    <div class="section-heading">
+      {%- if section.settings.eyebrow != blank -%}<span class="section-heading__eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
+      <h2>{{ section.settings.heading }}</h2>
+    </div>
+
+    {%- if section.settings.collection != blank and section.settings.collection.products.size > 0 -%}
+      <div class="grid grid--4">
+        {%- for product in section.settings.collection.products limit: section.settings.products_to_show -%}
+          {%- render 'product-card', product: product -%}
+        {%- endfor -%}
+      </div>
+      <div class="featured-collection__cta">
+        <a href="{{ section.settings.collection.url }}" class="button button--secondary">{{ 'collections.general.view_collection' | t }}</a>
+      </div>
+    {%- else -%}
+      <div class="empty-state">{{ 'collections.general.empty' | t }}</div>
+    {%- endif -%}
+  </div>
+</section>
+
+{%- stylesheet -%}
+.featured-collection__cta{text-align:center;margin-top:2.5rem;}
+{%- endstylesheet -%}
+
+{% schema %}
+{
+  "name": "Colección destacada",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Antetítulo", "default": "Selección" },
+    { "type": "text", "id": "heading", "label": "Título", "default": "Obras destacadas" },
+    { "type": "collection", "id": "collection", "label": "Colección" },
+    { "type": "range", "id": "products_to_show", "label": "Nº de obras", "min": 2, "max": 8, "step": 1, "default": 4 },
+    {
+      "type": "select",
+      "id": "background",
+      "label": "Fondo",
+      "options": [
+        { "value": "default", "label": "Principal" },
+        { "value": "alt", "label": "Alterno" }
+      ],
+      "default": "default"
+    }
+  ],
+  "presets": [{ "name": "Colección destacada" }]
+}
+{% endschema %}

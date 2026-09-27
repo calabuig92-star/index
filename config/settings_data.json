@@ -1,0 +1,34 @@
+{
+  "current": "Default",
+  "presets": {
+    "Default": {
+      "logo": "",
+      "logo_width": 140,
+      "favicon": "",
+      "colors_background": "#F7F3EC",
+      "colors_background_alt": "#EFE9DD",
+      "colors_surface": "#FBF8F2",
+      "colors_text": "#2E2A24",
+      "colors_text_muted": "#71685A",
+      "colors_accent": "#AE6A44",
+      "colors_secondary": "#7C8B6C",
+      "colors_border": "#DED5C3",
+      "colors_button_text": "#F7F3EC",
+      "type_header_font": "playfair_display_n4",
+      "type_header_scale": 100,
+      "type_body_font": "work_sans_n4",
+      "type_body_scale": 100,
+      "layout_page_width": 1280,
+      "layout_spacing_sections": 64,
+      "layout_grid_gap": 24,
+      "buttons_radius": 2,
+      "borders_width": 1,
+      "image_radius": 0,
+      "social_instagram": "",
+      "social_pinterest": "",
+      "social_facebook": "",
+      "social_tiktok": "",
+      "analytics_gtm_id": ""
+    }
+  }
+}

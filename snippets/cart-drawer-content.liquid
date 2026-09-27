@@ -1,0 +1,57 @@
+{%- comment -%}
+  Cuerpo del carrito, reutilizado por sections/cart-drawer.liquid y sections/main-cart.liquid.
+  Parámetro opcional: context ('drawer' | 'page')
+{%- endcomment -%}
+{%- liquid
+  assign context = context | default: 'drawer'
+-%}
+{%- if cart.item_count == 0 -%}
+  <div class="empty-state cart-empty">
+    <p>{{ 'general.cart.empty' | t }}</p>
+    <a href="{{ routes.all_products_collection_url }}" class="button button--secondary">{{ 'general.cart.empty_link' | t }}</a>
+  </div>
+{%- else -%}
+  <ul class="cart-items cart-items--{{ context }}">
+    {%- for item in cart.items -%}
+      <li class="cart-item" data-cart-item data-line-key="{{ item.key }}">
+        <a href="{{ item.url }}" class="cart-item__media media media--square">
+          {%- if item.image -%}
+            <img src="{{ item.image | image_url: width: 200 }}" alt="{{ item.image.alt | escape }}" width="100" height="100" loading="lazy">
+          {%- endif -%}
+        </a>
+        <div class="cart-item__details">
+          <a href="{{ item.url }}" class="cart-item__title">{{ item.product.title }}</a>
+          {%- unless item.variant.title contains 'Default' -%}
+            <p class="cart-item__variant">{{ item.variant.title }}</p>
+          {%- endunless -%}
+          <div class="cart-item__price">
+            {%- if item.original_line_price != item.final_line_price -%}
+              <span class="price price--compare">{{ item.original_line_price | money }}</span>
+            {%- endif -%}
+            <span class="price">{{ item.final_line_price | money }}</span>
+          </div>
+          <div class="cart-item__controls">
+            <div class="quantity-stepper" role="group" aria-label="{{ 'general.cart.quantity' | t }}">
+              <button type="button" data-cart-qty-decrease aria-label="{{ 'general.cart.decrease_quantity' | t }}">{%- render 'icon', name: 'minus' -%}</button>
+              <span data-cart-qty-value>{{ item.quantity }}</span>
+              <button type="button" data-cart-qty-increase aria-label="{{ 'general.cart.increase_quantity' | t }}">{%- render 'icon', name: 'plus' -%}</button>
+            </div>
+            <button type="button" class="cart-item__remove link-underline" data-cart-remove>{{ 'general.cart.remove' | t }}</button>
+          </div>
+        </div>
+      </li>
+    {%- endfor -%}
+  </ul>
+
+  <div class="cart-summary">
+    <div class="cart-summary__row">
+      <span>{{ 'general.cart.subtotal' | t }}</span>
+      <span class="price">{{ cart.total_price | money }}</span>
+    </div>
+    <p class="cart-summary__note">{{ 'general.cart.shipping_at_checkout' | t }}</p>
+    <a href="{{ routes.cart_url }}/checkout" class="button button--accent button--full">{{ 'general.cart.checkout' | t }}</a>
+    {%- if context == 'drawer' -%}
+      <a href="{{ routes.cart_url }}" class="button button--secondary button--full">{{ 'general.cart.view_cart' | t }}</a>
+    {%- endif -%}
+  </div>
+{%- endif -%}

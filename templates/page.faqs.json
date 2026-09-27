@@ -1,0 +1,33 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page-faqs",
+      "blocks": {
+        "faq_1": {
+          "type": "faq",
+          "settings": {
+            "question": "¿Cuánto tarda el envío?",
+            "answer": "<p>Entre 3 y 7 días laborables según destino, con seguimiento incluido.</p>"
+          }
+        },
+        "faq_2": {
+          "type": "faq",
+          "settings": {
+            "question": "¿Puedo pedir una muestra del material antes de comprar?",
+            "answer": "<p>Sí, en las obras marcadas con la opción de muestra física puedes solicitar un recorte del material antes de decidir.</p>"
+          }
+        },
+        "faq_3": {
+          "type": "faq",
+          "settings": {
+            "question": "¿Las obras originales son piezas únicas?",
+            "answer": "<p>Sí — cada original es una pieza única, firmada, y no se reproduce.</p>"
+          }
+        }
+      },
+      "block_order": ["faq_1", "faq_2", "faq_3"],
+      "settings": {}
+    }
+  },
+  "order": ["main"]
+}

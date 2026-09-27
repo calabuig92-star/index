@@ -1,0 +1,40 @@
+<section class="about-preview section-padding bg-alt">
+  <div class="container about-preview__inner">
+    <div class="about-preview__media media media--portrait">
+      {%- if section.settings.image -%}
+        <img src="{{ section.settings.image | image_url: width: 900 }}" alt="{{ section.settings.image.alt | escape }}" loading="lazy" width="900" height="{{ 900 | divided_by: section.settings.image.aspect_ratio | default: 1125 }}">
+      {%- endif -%}
+    </div>
+    <div class="about-preview__content">
+      {%- if section.settings.eyebrow != blank -%}<span class="section-heading__eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
+      <h2>{{ section.settings.heading }}</h2>
+      <div class="about-preview__text">{{ section.settings.text }}</div>
+      {%- if section.settings.button_label != blank -%}
+        <a href="{{ section.settings.button_link | default: routes.root_url | append: 'pages/about' }}" class="button button--secondary">{{ section.settings.button_label }}</a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{%- stylesheet -%}
+.about-preview__inner{display:grid;gap:2.5rem;align-items:center;grid-template-columns:1fr;}
+.about-preview__text{color:var(--color-text-muted);margin-bottom:1.5em;}
+@media (min-width:800px){
+  .about-preview__inner{grid-template-columns:.8fr 1fr;}
+}
+{%- endstylesheet -%}
+
+{% schema %}
+{
+  "name": "Adelanto de la historia",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Imagen" },
+    { "type": "text", "id": "eyebrow", "label": "Antetítulo", "default": "Sobre el estudio" },
+    { "type": "text", "id": "heading", "label": "Título", "default": "Materia, proceso y calma" },
+    { "type": "richtext", "id": "text", "label": "Texto", "default": "<p>Cada pieza nace de un proceso lento — luz mediterránea, materiales nobles y tiempo para que las ideas maduren.</p>" },
+    { "type": "text", "id": "button_label", "label": "Texto del botón", "default": "Conocer la historia" },
+    { "type": "url", "id": "button_link", "label": "Enlace del botón" }
+  ],
+  "presets": [{ "name": "Adelanto de la historia" }]
+}
+{% endschema %}

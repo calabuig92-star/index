@@ -1,0 +1,108 @@
+<footer class="footer section-padding">
+  <div class="container">
+    <div class="footer__columns">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'column' -%}
+          <details class="accordion__item footer__column" open {{ block.shopify_attributes }}>
+            <summary class="accordion__summary footer__column-heading">{{ block.settings.heading }}</summary>
+            <div class="accordion__content footer__links">
+              {%- for link in linklists[block.settings.menu].links -%}
+                <a href="{{ link.url }}">{{ link.title }}</a>
+              {%- endfor -%}
+            </div>
+          </details>
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- if section.settings.show_newsletter -%}
+        <div class="footer__column footer__newsletter">
+          <p class="footer__column-heading footer__column-heading--static">{{ 'general.newsletter.heading' | t }}</p>
+          {%- render 'newsletter-form', id: 'Footer' -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="footer__bottom">
+      {%- if settings.social_instagram != blank or settings.social_pinterest != blank or settings.social_facebook != blank or settings.social_tiktok != blank -%}
+        <ul class="footer__social">
+          {%- if settings.social_instagram != blank -%}<li><a href="{{ settings.social_instagram }}" aria-label="{{ 'general.social.follow_on' | t: name: 'Instagram' }}">Instagram</a></li>{%- endif -%}
+          {%- if settings.social_pinterest != blank -%}<li><a href="{{ settings.social_pinterest }}" aria-label="{{ 'general.social.follow_on' | t: name: 'Pinterest' }}">Pinterest</a></li>{%- endif -%}
+          {%- if settings.social_facebook != blank -%}<li><a href="{{ settings.social_facebook }}" aria-label="{{ 'general.social.follow_on' | t: name: 'Facebook' }}">Facebook</a></li>{%- endif -%}
+          {%- if settings.social_tiktok != blank -%}<li><a href="{{ settings.social_tiktok }}" aria-label="{{ 'general.social.follow_on' | t: name: 'TikTok' }}">TikTok</a></li>{%- endif -%}
+        </ul>
+      {%- endif -%}
+
+      {%- if shop.enabled_payment_types.size > 0 -%}
+        <ul class="footer__payment">
+          {%- for type in shop.enabled_payment_types -%}
+            <li>{{ type | payment_type_svg_tag: class: 'footer__payment-icon' }}</li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      <p class="footer__copyright">&copy; {{ 'now' | date: '%Y' }} {{ shop.name }} — {{ 'sections.footer.rights' | t }}</p>
+    </div>
+  </div>
+</footer>
+
+{%- stylesheet -%}
+.footer{border-top:var(--border-width) solid var(--color-border);background:var(--color-bg-alt);}
+.footer__columns{display:grid;gap:2rem;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-bottom:2.5rem;}
+.footer__column-heading{font-family:var(--font-heading-family);font-size:1rem;font-weight:700;}
+.footer__column-heading--static{padding:1.1em 0;margin:0;}
+.footer__links{display:flex;flex-direction:column;gap:.6em;}
+.footer__links a{color:var(--color-text-muted);font-size:.9rem;}
+.footer__links a:hover{color:var(--color-text);}
+.footer__bottom{
+  border-top:var(--border-width) solid var(--color-border);
+  padding-top:1.5rem;
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem;
+}
+.footer__social{list-style:none;display:flex;gap:1.25rem;}
+.footer__social a{font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;color:var(--color-text-muted);}
+.footer__payment{list-style:none;display:flex;gap:.5rem;flex-wrap:wrap;}
+.footer__payment-icon{height:24px;width:auto;}
+.footer__copyright{font-size:.8rem;color:var(--color-text-muted);margin:0;width:100%;order:99;}
+
+@media (min-width:700px){
+  .footer .footer__column .accordion__summary{pointer-events:none;}
+  .footer .footer__column .accordion__summary::after{display:none;}
+  .footer__column{border-bottom:none;}
+  .footer__copyright{width:auto;order:0;}
+}
+{%- endstylesheet -%}
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_newsletter",
+      "label": "Mostrar formulario de newsletter",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "column",
+      "name": "Columna de enlaces",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Título", "default": "Tienda" },
+        { "type": "link_list", "id": "menu", "label": "Menú a mostrar" }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [
+    {
+      "name": "Footer",
+      "blocks": [
+        { "type": "column", "settings": { "heading": "Tienda" } },
+        { "type": "column", "settings": { "heading": "Historia" } },
+        { "type": "column", "settings": { "heading": "Legal" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

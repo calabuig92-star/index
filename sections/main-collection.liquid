@@ -1,0 +1,85 @@
+{%- liquid
+  assign product_type_filter = null
+  for filter in collection.filters
+    if filter.param_name == 'filter.p.product_type'
+      assign product_type_filter = filter
+    endif
+  endfor
+  assign per_page = section.settings.products_per_page
+-%}
+<div class="collection-shop section-padding">
+  <div class="container">
+    <div class="collection-shop__header">
+      <h1>{{ collection.title }}</h1>
+      {%- if collection.description != blank -%}
+        <div class="collection-shop__description">{{ collection.description }}</div>
+      {%- endif -%}
+    </div>
+
+    {%- if product_type_filter and product_type_filter.values.size > 1 -%}
+      <div class="collection-shop__filter">
+        <label for="ProductTypeFilter-{{ section.id }}">{{ 'collections.general.filter_type' | t }}</label>
+        <select id="ProductTypeFilter-{{ section.id }}" data-filter-select onchange="window.location.href=this.value">
+          <option value="{{ collection.url }}"{% unless product_type_filter.active_values.size > 0 %} selected{% endunless %}>
+            {{- 'collections.general.filter_all' | t }} ({{ collection.products_count }})
+          </option>
+          {%- for value in product_type_filter.values -%}
+            <option value="{{ value.url_to_add }}"{% if value.active %} selected{% endif %}>{{ value.label }} ({{ value.count }})</option>
+          {%- endfor -%}
+        </select>
+      </div>
+    {%- endif -%}
+
+    {%- paginate collection.products by per_page -%}
+      {%- if collection.products.size > 0 -%}
+        <div class="grid grid--4">
+          {%- for product in collection.products -%}
+            {%- render 'product-card', product: product -%}
+          {%- endfor -%}
+        </div>
+        {{ paginate | default_pagination }}
+      {%- else -%}
+        <div class="empty-state">{{ 'collections.general.empty' | t }}</div>
+      {%- endif -%}
+    {%- endpaginate -%}
+
+    {%- if section.settings.related_collections != blank -%}
+      <nav class="collection-shop__more" aria-label="Colecciones">
+        <ul>
+          {%- for link in linklists[section.settings.related_collections].links -%}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
+  </div>
+</div>
+
+{%- stylesheet -%}
+.collection-shop__header{max-width:640px;margin-bottom:2rem;}
+.collection-shop__description{color:var(--color-text-muted);margin-top:.5em;}
+.collection-shop__filter{margin-bottom:2rem;}
+.collection-shop__filter label{display:block;font-size:.8rem;color:var(--color-text-muted);margin-bottom:.4rem;}
+.collection-shop__filter select{
+  padding:.75em 2.5em .75em 1em;
+  border:var(--border-width) solid var(--color-border);
+  border-radius:var(--radius-button);
+  background:var(--color-surface);
+  font-family:inherit;font-size:.9rem;color:var(--color-text);
+  max-width:320px;width:100%;
+}
+.collection-shop__more{margin-top:3.5rem;padding-top:2rem;border-top:var(--border-width) solid var(--color-border);text-align:center;}
+.collection-shop__more ul{list-style:none;display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;}
+.collection-shop__more a{font-size:.85rem;text-transform:uppercase;letter-spacing:.05em;}
+.pagination{display:flex;gap:.5rem;justify-content:center;margin-top:3rem;list-style:none;}
+{%- endstylesheet -%}
+
+{% schema %}
+{
+  "name": "Colección — Tienda",
+  "settings": [
+    { "type": "range", "id": "products_per_page", "label": "Obras por página", "min": 8, "max": 48, "step": 4, "default": 24 },
+    { "type": "link_list", "id": "related_collections", "label": "Menú de colecciones (pie de página)" }
+  ]
+}
+{% endschema %}

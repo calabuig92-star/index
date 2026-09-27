@@ -1,0 +1,89 @@
+<article class="article-page">
+  {%- if article.image -%}
+    <div class="article-page__hero media media--landscape">
+      <img src="{{ article.image | image_url: width: 1800 }}" alt="{{ article.image.alt | escape }}" loading="eager" fetchpriority="high" width="1800" height="{{ 1800 | divided_by: article.image.aspect_ratio | default: 1000 }}">
+    </div>
+  {%- endif -%}
+
+  <div class="container section-padding container--narrow">
+    {%- render 'breadcrumbs' -%}
+    <p class="article-page__date">{{ article.published_at | date: '%d %B %Y' }}{% if article.author != blank %} — {{ article.author }}{% endif %}</p>
+    <h1>{{ article.title }}</h1>
+    <div class="article-page__content rte">{{ article.content }}</div>
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="article-page__mentioned">
+        <h2>{{ 'blogs.article.mentioned_works' | t }}</h2>
+        <div class="grid grid--4">
+          {%- for block in section.blocks -%}
+            {%- if block.settings.product != blank -%}
+              {%- render 'product-card', product: block.settings.product -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+    <a href="{{ blog.url }}" class="link-underline article-page__back">{{ 'blogs.article.back_to_journal' | t }}</a>
+  </div>
+
+  {%- liquid
+    assign related_count = 0
+  -%}
+  <div class="section-padding bg-alt">
+    <div class="container">
+      <div class="section-heading">
+        <h2>{{ 'blogs.article.related_articles' | t }}</h2>
+      </div>
+      <div class="grid grid--3">
+        {%- for related in blog.articles -%}
+          {%- if related.id != article.id and related_count < 3 -%}
+            {%- render 'article-card', article: related -%}
+            {%- assign related_count = related_count | plus: 1 -%}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</article>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": {{ article.title | json }},
+  "datePublished": {{ article.published_at | date: '%Y-%m-%dT%H:%M:%SZ' | json }},
+  {%- if article.author != blank -%}
+  "author": { "@type": "Person", "name": {{ article.author | json }} },
+  {%- endif -%}
+  {%- if article.image -%}
+  "image": [{{ article.image | image_url: width: 1200 | prepend: "https:" | json }}],
+  {%- endif -%}
+  "publisher": { "@type": "Organization", "name": {{ shop.name | json }} },
+  "mainEntityOfPage": {{ request.origin | append: article.url | json }}
+}
+</script>
+
+{%- stylesheet -%}
+.article-page__hero{margin-bottom:2.5rem;}
+.article-page__date{color:var(--color-text-muted);font-size:.85rem;margin-bottom:.5em;}
+.article-page__content{margin:1.5rem 0 2.5rem;}
+.article-page__mentioned{margin:3rem 0;padding-top:2rem;border-top:var(--border-width) solid var(--color-border);}
+.article-page__back{display:inline-block;margin-top:1rem;}
+{%- endstylesheet -%}
+
+{% schema %}
+{
+  "name": "Artículo del Journal",
+  "blocks": [
+    {
+      "type": "mentioned_product",
+      "name": "Obra mencionada",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Obra" }
+      ]
+    }
+  ],
+  "max_blocks": 4
+}
+{% endschema %}

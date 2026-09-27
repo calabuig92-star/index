@@ -1,0 +1,42 @@
+<div class="faqs-page section-padding">
+  <div class="container container--narrow">
+    {%- render 'breadcrumbs' -%}
+    <h1>{{ page.title }}</h1>
+    {%- if page.content != blank -%}
+      <div class="faqs-page__intro">{{ page.content }}</div>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="accordion faqs-page__list">
+        {%- for block in section.blocks -%}
+          <details class="accordion__item" {{ block.shopify_attributes }}>
+            <summary class="accordion__summary">{{ block.settings.question }}</summary>
+            <div class="accordion__content">{{ block.settings.answer }}</div>
+          </details>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{%- stylesheet -%}
+.container--narrow{max-width:760px;}
+.faqs-page__intro{color:var(--color-text-muted);margin-bottom:2rem;}
+{%- endstylesheet -%}
+
+{% schema %}
+{
+  "name": "Página — FAQ",
+  "blocks": [
+    {
+      "type": "faq",
+      "name": "Pregunta",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Pregunta", "default": "¿Cuánto tarda el envío?" },
+        { "type": "richtext", "id": "answer", "label": "Respuesta" }
+      ]
+    }
+  ],
+  "max_blocks": 20
+}
+{% endschema %}

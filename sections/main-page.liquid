@@ -1,0 +1,28 @@
+<div class="page section-padding">
+  <div class="container container--narrow">
+    {%- render 'breadcrumbs' -%}
+    {%- if section.settings.image -%}
+      <div class="page__image media media--landscape">
+        <img src="{{ section.settings.image | image_url: width: 1400 }}" alt="" loading="lazy" width="1400" height="{{ 1400 | divided_by: section.settings.image.aspect_ratio | default: 800 }}">
+      </div>
+    {%- endif -%}
+    <h1>{{ page.title }}</h1>
+    <div class="page__content rte">{{ page.content }}</div>
+  </div>
+</div>
+
+{%- stylesheet -%}
+.page__image{margin-bottom:2rem;}
+.rte p{margin-bottom:1.2em;}
+.rte h2,.rte h3{margin-top:1.6em;}
+.rte ul,.rte ol{padding-left:1.4em;margin-bottom:1.2em;}
+{%- endstylesheet -%}
+
+{% schema %}
+{
+  "name": "Página estándar",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Imagen de cabecera (opcional)" }
+  ]
+}
+{% endschema %}

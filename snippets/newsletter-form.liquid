@@ -1,0 +1,25 @@
+{%- comment -%} Parámetro requerido: id (para inputs únicos si se repite en la misma página) {%- endcomment -%}
+<div class="newsletter-form">
+  {%- form 'customer', id: 'NewsletterForm-' | append: id, class: 'newsletter-form__form' -%}
+    <input type="hidden" name="contact[tags]" value="newsletter">
+    {%- if form.posted_successfully? -%}
+      <p class="newsletter-form__success" role="status">{{ 'general.newsletter.success' | t }}</p>
+    {%- else -%}
+      <div class="newsletter-form__row">
+        <label for="NewsletterEmail-{{ id }}" class="visually-hidden">{{ 'general.newsletter.placeholder' | t }}</label>
+        <input
+          type="email"
+          name="contact[email]"
+          id="NewsletterEmail-{{ id }}"
+          placeholder="{{ 'general.newsletter.placeholder' | t }}"
+          autocomplete="email"
+          required
+        >
+        <button type="submit" class="button button--primary">{{ 'general.newsletter.submit' | t }}</button>
+      </div>
+      {%- if form.errors -%}
+        <p class="newsletter-form__error" role="alert">{{ 'general.newsletter.error' | t }}</p>
+      {%- endif -%}
+    {%- endif -%}
+  {%- endform -%}
+</div>

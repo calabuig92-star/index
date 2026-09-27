@@ -1,0 +1,38 @@
+{%- comment -%} Parámetro requerido: product {%- endcomment -%}
+<div class="product-card">
+  <a href="{{ product.url }}" class="product-card__media media media--portrait">
+    {%- render 'artwork-badge', product: product -%}
+    {%- if product.featured_image -%}
+      <img
+        src="{{ product.featured_image | image_url: width: 600 }}"
+        srcset="{{ product.featured_image | image_url: width: 400 }} 400w, {{ product.featured_image | image_url: width: 600 }} 600w, {{ product.featured_image | image_url: width: 900 }} 900w"
+        sizes="(min-width: 700px) 25vw, 50vw"
+        alt="{{ product.featured_image.alt | default: product.title | escape }}"
+        loading="lazy"
+        width="600"
+        height="{{ 600 | divided_by: product.featured_image.aspect_ratio | default: 750 }}"
+        class="product-card__img product-card__img--primary"
+      >
+      {%- if product.images[1] -%}
+        <img
+          src="{{ product.images[1] | image_url: width: 600 }}"
+          alt=""
+          loading="lazy"
+          width="600"
+          height="{{ 600 | divided_by: product.images[1].aspect_ratio | default: 750 }}"
+          class="product-card__img product-card__img--secondary"
+        >
+      {%- endif -%}
+    {%- endif -%}
+    {%- if product.available == false -%}
+      <span class="badge badge--outline product-card__soldout">{{ 'products.product.sold_out' | t }}</span>
+    {%- endif -%}
+  </a>
+  <a href="{{ product.url }}" class="product-card__link">
+    <h3 class="product-card__title">{{ product.title }}</h3>
+  </a>
+  {%- if product.metafields.custom.artwork.value.medium -%}
+    <p class="product-card__meta">{{ product.metafields.custom.artwork.value.medium }}</p>
+  {%- endif -%}
+  {%- render 'price-display', target: product -%}
+</div>

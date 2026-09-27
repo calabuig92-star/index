@@ -1,0 +1,242 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Mediterráneo Editorial",
+    "theme_version": "1.0.0",
+    "theme_author": "Studio",
+    "theme_documentation_url": "",
+    "theme_support_url": ""
+  },
+  {
+    "name": "Logo y favicon",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo"
+      },
+      {
+        "type": "range",
+        "id": "logo_width",
+        "label": "Ancho del logo",
+        "min": 80,
+        "max": 260,
+        "step": 10,
+        "unit": "px",
+        "default": 140
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon",
+        "info": "Se recomienda una imagen cuadrada de al menos 32 x 32 px"
+      }
+    ]
+  },
+  {
+    "name": "Colores",
+    "settings": [
+      {
+        "type": "color",
+        "id": "colors_background",
+        "label": "Fondo principal",
+        "default": "#F7F3EC"
+      },
+      {
+        "type": "color",
+        "id": "colors_background_alt",
+        "label": "Fondo alterno (secciones)",
+        "default": "#EFE9DD"
+      },
+      {
+        "type": "color",
+        "id": "colors_surface",
+        "label": "Superficie (tarjetas, drawers)",
+        "default": "#FBF8F2"
+      },
+      {
+        "type": "color",
+        "id": "colors_text",
+        "label": "Texto principal",
+        "default": "#2E2A24"
+      },
+      {
+        "type": "color",
+        "id": "colors_text_muted",
+        "label": "Texto secundario",
+        "default": "#71685A"
+      },
+      {
+        "type": "color",
+        "id": "colors_accent",
+        "label": "Acento (precios, CTA)",
+        "default": "#AE6A44"
+      },
+      {
+        "type": "color",
+        "id": "colors_secondary",
+        "label": "Secundario (badges)",
+        "default": "#7C8B6C"
+      },
+      {
+        "type": "color",
+        "id": "colors_border",
+        "label": "Bordes y líneas",
+        "default": "#DED5C3"
+      },
+      {
+        "type": "color",
+        "id": "colors_button_text",
+        "label": "Texto sobre botones rellenos",
+        "default": "#F7F3EC"
+      }
+    ]
+  },
+  {
+    "name": "Tipografía",
+    "settings": [
+      {
+        "type": "font_picker",
+        "id": "type_header_font",
+        "label": "Tipografía de títulos",
+        "default": "playfair_display_n4"
+      },
+      {
+        "type": "range",
+        "id": "type_header_scale",
+        "label": "Tamaño de títulos",
+        "min": 100,
+        "max": 150,
+        "step": 5,
+        "unit": "%",
+        "default": 100
+      },
+      {
+        "type": "font_picker",
+        "id": "type_body_font",
+        "label": "Tipografía de texto",
+        "default": "work_sans_n4"
+      },
+      {
+        "type": "range",
+        "id": "type_body_scale",
+        "label": "Tamaño de texto",
+        "min": 90,
+        "max": 130,
+        "step": 5,
+        "unit": "%",
+        "default": 100
+      }
+    ]
+  },
+  {
+    "name": "Diseño",
+    "settings": [
+      {
+        "type": "range",
+        "id": "layout_page_width",
+        "label": "Ancho máximo del contenido",
+        "min": 1000,
+        "max": 1600,
+        "step": 20,
+        "unit": "px",
+        "default": 1280
+      },
+      {
+        "type": "range",
+        "id": "layout_spacing_sections",
+        "label": "Espaciado vertical entre secciones",
+        "min": 24,
+        "max": 120,
+        "step": 4,
+        "unit": "px",
+        "default": 64
+      },
+      {
+        "type": "range",
+        "id": "layout_grid_gap",
+        "label": "Espaciado de rejillas de producto",
+        "min": 8,
+        "max": 48,
+        "step": 2,
+        "unit": "px",
+        "default": 24
+      }
+    ]
+  },
+  {
+    "name": "Botones y bordes",
+    "settings": [
+      {
+        "type": "range",
+        "id": "buttons_radius",
+        "label": "Redondeo de botones",
+        "min": 0,
+        "max": 40,
+        "step": 1,
+        "unit": "px",
+        "default": 2
+      },
+      {
+        "type": "range",
+        "id": "borders_width",
+        "label": "Grosor de bordes",
+        "min": 0,
+        "max": 4,
+        "step": 1,
+        "unit": "px",
+        "default": 1
+      },
+      {
+        "type": "range",
+        "id": "image_radius",
+        "label": "Redondeo de imágenes",
+        "min": 0,
+        "max": 24,
+        "step": 1,
+        "unit": "px",
+        "default": 0
+      }
+    ]
+  },
+  {
+    "name": "Redes sociales",
+    "settings": [
+      {
+        "type": "text",
+        "id": "social_instagram",
+        "label": "URL de Instagram"
+      },
+      {
+        "type": "text",
+        "id": "social_pinterest",
+        "label": "URL de Pinterest"
+      },
+      {
+        "type": "text",
+        "id": "social_facebook",
+        "label": "URL de Facebook"
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok",
+        "label": "URL de TikTok"
+      }
+    ]
+  },
+  {
+    "name": "Analítica",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Hueco de integración preparado (sección 12 de la especificación). No se activa nada hasta rellenar el ID."
+      },
+      {
+        "type": "text",
+        "id": "analytics_gtm_id",
+        "label": "ID de contenedor de Google Tag Manager",
+        "info": "Formato GTM-XXXXXXX. Déjalo vacío para no cargar nada."
+      }
+    ]
+  }
+]

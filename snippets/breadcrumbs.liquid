@@ -1,0 +1,40 @@
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <ol class="breadcrumbs__list" itemscope itemtype="https://schema.org/BreadcrumbList">
+    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+      <a href="{{ routes.root_url }}" itemprop="item"><span itemprop="name">{{ shop.name }}</span></a>
+      <meta itemprop="position" content="1">
+    </li>
+    {%- case template.name -%}
+      {%- when 'product' -%}
+        {%- if collection.handle -%}
+          <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <a href="{{ collection.url }}" itemprop="item"><span itemprop="name">{{ collection.title }}</span></a>
+            <meta itemprop="position" content="2">
+          </li>
+        {%- endif -%}
+        <li aria-current="page" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span itemprop="name">{{ product.title }}</span>
+          <meta itemprop="position" content="{% if collection.handle %}3{% else %}2{% endif %}">
+        </li>
+      {%- when 'collection' -%}
+        <li aria-current="page" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span itemprop="name">{{ collection.title }}</span>
+          <meta itemprop="position" content="2">
+        </li>
+      {%- when 'page' -%}
+        <li aria-current="page" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span itemprop="name">{{ page.title }}</span>
+          <meta itemprop="position" content="2">
+        </li>
+      {%- when 'article' -%}
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="{{ blog.url }}" itemprop="item"><span itemprop="name">{{ blog.title }}</span></a>
+          <meta itemprop="position" content="2">
+        </li>
+        <li aria-current="page" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span itemprop="name">{{ article.title }}</span>
+          <meta itemprop="position" content="3">
+        </li>
+    {%- endcase -%}
+  </ol>
+</nav>

@@ -1,0 +1,57 @@
+<div class="search-results section-padding">
+  <div class="container">
+    <div class="collection-shop__header">
+      <h1>{{ 'general.search.search' | t }}</h1>
+      <form action="{{ routes.search_url }}" method="get" role="search" class="search-results__form">
+        <input type="hidden" name="type" value="product">
+        <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'general.search.placeholder' | t }}" aria-label="{{ 'general.search.search' | t }}">
+        <button type="submit" class="button button--primary">{{ 'general.search.submit' | t }}</button>
+      </form>
+    </div>
+
+    {%- if search.performed -%}
+      {%- paginate search.results by 24 -%}
+        {%- if search.results.size > 0 -%}
+          <p class="search-results__count">
+            {%- if search.results_count == 1 -%}
+              {{ 'general.search.results_count.one' | t: count: search.results_count }}
+            {%- else -%}
+              {{ 'general.search.results_count.other' | t: count: search.results_count }}
+            {%- endif -%}
+          </p>
+          <div class="grid grid--4">
+            {%- for item in search.results -%}
+              {%- if item.object_type == 'product' -%}
+                {%- render 'product-card', product: item -%}
+              {%- elsif item.object_type == 'article' -%}
+                {%- render 'article-card', article: item -%}
+              {%- else -%}
+                <a href="{{ item.url }}" class="product-card">
+                  <h3 class="product-card__title">{{ item.title }}</h3>
+                </a>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+          {{ paginate | default_pagination }}
+        {%- else -%}
+          <div class="empty-state">{{ 'general.search.no_results_html' | t: terms: search.terms }}</div>
+        {%- endif -%}
+      {%- endpaginate -%}
+    {%- endif -%}
+  </div>
+</div>
+
+{%- stylesheet -%}
+.search-results__form{display:flex;gap:.75rem;max-width:480px;margin-top:1.5rem;}
+.search-results__form input{
+  flex:1;padding:.85em 1em;border:var(--border-width) solid var(--color-border);
+  border-radius:var(--radius-button);background:var(--color-surface);font-family:inherit;font-size:1rem;
+}
+.search-results__count{color:var(--color-text-muted);margin-bottom:1.5rem;}
+{%- endstylesheet -%}
+
+{% schema %}
+{
+  "name": "Resultados de búsqueda"
+}
+{% endschema %}

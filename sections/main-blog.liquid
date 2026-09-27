@@ -1,0 +1,40 @@
+<div class="blog-index section-padding">
+  <div class="container">
+    {%- render 'breadcrumbs' -%}
+    <div class="section-heading">
+      <h1>{{ blog.title }}</h1>
+    </div>
+
+    {%- paginate blog.articles by 9 -%}
+      {%- if blog.articles.size > 0 -%}
+        <div class="grid grid--3">
+          {%- for article in blog.articles -%}
+            {%- render 'article-card', article: article -%}
+          {%- endfor -%}
+        </div>
+        {{ paginate | default_pagination }}
+      {%- else -%}
+        <div class="empty-state">{{ 'sections.journal.empty' | t }}</div>
+      {%- endif -%}
+    {%- endpaginate -%}
+
+    {%- if section.settings.show_newsletter -%}
+      <div class="blog-index__newsletter">
+        {%- render 'newsletter-form', id: 'BlogIndex' -%}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{%- stylesheet -%}
+.blog-index__newsletter{max-width:480px;margin:4rem auto 0;text-align:center;padding-top:3rem;border-top:var(--border-width) solid var(--color-border);}
+{%- endstylesheet -%}
+
+{% schema %}
+{
+  "name": "Blog — Journal",
+  "settings": [
+    { "type": "checkbox", "id": "show_newsletter", "label": "Mostrar newsletter al pie", "default": true }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,12 @@
+{%- comment -%} Parámetro requerido: product {%- endcomment -%}
+{%- if product.metafields.custom.sample_available.value -%}
+  <div class="sample-request">
+    <a
+      class="button button--secondary button--full"
+      href="mailto:{{ shop.email }}?subject={{ 'Muestra física — ' | append: product.title | url_encode }}&body={{ 'Hola, me gustaría pedir una muestra física del material para: ' | append: product.title | url_encode }}"
+    >
+      {{- 'products.product.request_sample' | t -}}
+    </a>
+    <p class="sample-request__note">{{ 'products.product.request_sample_note' | t }}</p>
+  </div>
+{%- endif -%}

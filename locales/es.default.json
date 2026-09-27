@@ -1,0 +1,127 @@
+{
+  "general": {
+    "meta": {
+      "page": "Página {{ page }}"
+    },
+    "search": {
+      "search": "Buscar",
+      "placeholder": "Buscar obras, colecciones…",
+      "no_results_html": "No hay resultados para “{{ terms }}”. Prueba con otra palabra.",
+      "results_count": {
+        "one": "{{ count }} resultado",
+        "other": "{{ count }} resultados"
+      },
+      "close": "Cerrar búsqueda",
+      "submit": "Buscar"
+    },
+    "cart": {
+      "title": "Carrito",
+      "empty": "Tu carrito está vacío",
+      "empty_link": "Ver la tienda",
+      "view_cart": "Ver carrito",
+      "checkout": "Finalizar compra",
+      "remove": "Quitar",
+      "quantity": "Cantidad",
+      "subtotal": "Subtotal",
+      "shipping_at_checkout": "Envío e impuestos calculados en el pago",
+      "close": "Cerrar carrito",
+      "decrease_quantity": "Reducir cantidad",
+      "increase_quantity": "Aumentar cantidad"
+    },
+    "newsletter": {
+      "heading": "No te pierdas nada",
+      "text": "Nuevas obras, colecciones y notas de proceso — sin spam, con calma.",
+      "placeholder": "Tu email",
+      "submit": "Suscribirme",
+      "success": "Ya formas parte de la lista. Gracias.",
+      "error": "Algo no ha ido bien. Revisa el email e inténtalo de nuevo."
+    },
+    "social": {
+      "follow_on": "Síguenos en {{ name }}"
+    }
+  },
+  "sections": {
+    "header": {
+      "menu": "Menú",
+      "close_menu": "Cerrar menú",
+      "account": "Mi cuenta",
+      "cart": "Carrito"
+    },
+    "announcement": {
+      "close": "Cerrar aviso"
+    },
+    "shop_by_type": {
+      "heading": "Comprar por tipo"
+    },
+    "collection_story": {
+      "cta": "Ver la colección"
+    },
+    "journal": {
+      "heading": "Journal",
+      "read_more": "Leer más",
+      "empty": "Todavía no hay artículos publicados."
+    },
+    "footer": {
+      "rights": "Todos los derechos reservados."
+    }
+  },
+  "products": {
+    "product": {
+      "original_badge": "Pieza única",
+      "limited_badge": "Edición limitada",
+      "edition_of": "Edición de {{ size }}",
+      "sold_out": "Agotado",
+      "add_to_cart": "Añadir al carrito",
+      "adding": "Añadiendo…",
+      "sale_price": "Precio de oferta",
+      "regular_price": "Precio habitual",
+      "size": "Tamaño",
+      "quantity": "Cantidad",
+      "request_sample": "Pedir muestra física",
+      "request_sample_note": "Recibe un recorte del material antes de decidir.",
+      "details": "Detalles de la obra",
+      "materials": "Materiales",
+      "size_guide": "Medidas",
+      "printing": "Impresión",
+      "shipping": "Envío",
+      "returns": "Devoluciones",
+      "related_heading": "Obras relacionadas",
+      "same_collection_heading": "De la misma colección",
+      "year": "Año",
+      "medium": "Técnica",
+      "subject": "Tema",
+      "original_dimensions": "Dimensiones de la obra original",
+      "finish_placeholder": "Acabado y enmarcado",
+      "coming_soon": "Próximamente"
+    }
+  },
+  "collections": {
+    "general": {
+      "empty": "Todavía no hay obras en esta colección.",
+      "filter_type": "Tipo de obra",
+      "filter_all": "Todo",
+      "view_collection": "Ver colección"
+    }
+  },
+  "blogs": {
+    "article": {
+      "back_to_journal": "Volver al Journal",
+      "mentioned_works": "Obras mencionadas",
+      "related_articles": "También te puede interesar"
+    }
+  },
+  "contact": {
+    "form": {
+      "name": "Nombre",
+      "email": "Email",
+      "message": "Mensaje",
+      "submit": "Enviar",
+      "success": "Gracias — te responderemos lo antes posible.",
+      "error": "Revisa los campos e inténtalo de nuevo."
+    }
+  },
+  "accessibility": {
+    "skip_to_content": "Ir al contenido",
+    "load_image_in_gallery": "Cargar imagen {{ index }} en la galería"
+  }
+}

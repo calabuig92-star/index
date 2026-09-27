@@ -1,0 +1,73 @@
+{%- liquid
+  assign story_collection = section.settings.collection
+  assign heading = section.settings.heading
+  if heading == blank and story_collection != blank
+    assign heading = story_collection.title
+  endif
+  assign text = section.settings.text
+  if text == blank and story_collection != blank
+    assign text = story_collection.metafields.custom.inspiration.value
+  endif
+  if text == blank and story_collection != blank
+    assign text = story_collection.description
+  endif
+  assign link = story_collection.url | default: section.settings.button_link
+  assign button_label = section.settings.button_label
+  if button_label == blank
+    assign button_label = 'sections.collection_story.cta' | t
+  endif
+-%}
+<section class="collection-story section-padding{% if section.settings.image_position == 'right' %} collection-story--reverse{% endif %}">
+  <div class="container collection-story__inner">
+    <div class="collection-story__media media media--landscape">
+      {%- if section.settings.image -%}
+        <img src="{{ section.settings.image | image_url: width: 1200 }}" alt="{{ heading | escape }}" loading="lazy" width="1200" height="{{ 1200 | divided_by: section.settings.image.aspect_ratio | default: 750 }}">
+      {%- elsif story_collection.featured_image -%}
+        <img src="{{ story_collection.featured_image | image_url: width: 1200 }}" alt="{{ heading | escape }}" loading="lazy" width="1200" height="{{ 1200 | divided_by: story_collection.featured_image.aspect_ratio | default: 750 }}">
+      {%- endif -%}
+    </div>
+    <div class="collection-story__content">
+      {%- if section.settings.eyebrow != blank -%}<span class="section-heading__eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
+      {%- if heading != blank -%}<h2>{{ heading }}</h2>{%- endif -%}
+      {%- if text != blank -%}<div class="collection-story__text">{{ text }}</div>{%- endif -%}
+      {%- if link != blank -%}
+        <a href="{{ link }}" class="button button--secondary">{{ button_label }}</a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{%- stylesheet -%}
+.collection-story__inner{display:grid;gap:2.5rem;align-items:center;grid-template-columns:1fr;}
+.collection-story--reverse .collection-story__media{order:2;}
+.collection-story__text{color:var(--color-text-muted);margin-bottom:1.5em;}
+@media (min-width:800px){
+  .collection-story__inner{grid-template-columns:1.1fr 1fr;}
+}
+{%- endstylesheet -%}
+
+{% schema %}
+{
+  "name": "Historia de colección",
+  "settings": [
+    { "type": "collection", "id": "collection", "label": "Colección", "info": "Si se rellena, aporta título/imagen/enlace por defecto." },
+    { "type": "image_picker", "id": "image", "label": "Imagen (sobrescribe la de la colección)" },
+    { "type": "text", "id": "eyebrow", "label": "Antetítulo", "default": "Una serie" },
+    { "type": "text", "id": "heading", "label": "Título (opcional)" },
+    { "type": "richtext", "id": "text", "label": "Texto conceptual (opcional)" },
+    { "type": "text", "id": "button_label", "label": "Texto del botón" },
+    { "type": "url", "id": "button_link", "label": "Enlace (si no hay colección)" },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Posición de la imagen",
+      "options": [
+        { "value": "left", "label": "Izquierda" },
+        { "value": "right", "label": "Derecha" }
+      ],
+      "default": "left"
+    }
+  ],
+  "presets": [{ "name": "Historia de colección" }]
+}
+{% endschema %}

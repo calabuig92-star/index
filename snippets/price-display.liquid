@@ -1,0 +1,17 @@
+{%- comment -%}
+  Parámetro requerido: target (product o variant, cualquiera con .price / .compare_at_price)
+{%- endcomment -%}
+{%- liquid
+  assign compare = target.compare_at_price
+  assign current = target.price
+-%}
+<span class="price-display">
+  {%- if compare > current -%}
+    <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
+    <span class="price price--compare">{{ compare | money }}</span>
+    <span class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
+    <span class="price price--accent">{{ current | money }}</span>
+  {%- else -%}
+    <span class="price">{{ current | money }}</span>
+  {%- endif -%}
+</span>

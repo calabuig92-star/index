@@ -1,0 +1,396 @@
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign show_size_selector = true
+  if product.type == 'Original' or product.has_only_default_variant
+    assign show_size_selector = false
+  endif
+-%}
+<div class="product section-padding">
+  <div class="container">
+    {%- render 'breadcrumbs' -%}
+
+    <div class="product__layout">
+      <div class="product__gallery-col">
+        {%- render 'product-gallery', product: product -%}
+      </div>
+
+      <div class="product__info-col">
+        {%- render 'artwork-badge', product: product -%}
+        <h1 class="product__title">{{ product.title }}</h1>
+
+        <div class="product-price product-price--main" data-product-price>
+          {%- render 'price-display', target: current_variant -%}
+        </div>
+        <div hidden data-variant-price-templates>
+          {%- for variant in product.variants -%}
+            <template data-variant-id="{{ variant.id }}">{%- render 'price-display', target: variant -%}</template>
+          {%- endfor -%}
+        </div>
+
+        <script type="application/json" data-product-json>
+          {{ product | json }}
+        </script>
+
+        <form method="post" action="{{ routes.cart_add_url }}" data-product-form novalidate>
+          <input type="hidden" name="form_type" value="product">
+
+          {%- unless show_size_selector == false -%}
+            {%- for option in product.options_with_values -%}
+              <div class="product-form__option" data-option-position="{{ forloop.index0 }}">
+                <label>{{ option.name }}</label>
+                <div class="option-buttons">
+                  {%- for value in option.values -%}
+                    <button type="button" class="option-button{% if value == option.selected_value %} is-selected{% endif %}" data-option-value="{{ value | escape }}">{{ value }}</button>
+                  {%- endfor -%}
+                </div>
+              </div>
+            {%- endfor -%}
+          {%- endunless -%}
+
+          <label for="ProductVariantSelect-{{ section.id }}" class="visually-hidden">{{ 'products.product.size' | t }}</label>
+          <select name="id" id="ProductVariantSelect-{{ section.id }}" data-variant-select>
+            {%- for variant in product.variants -%}
+              <option value="{{ variant.id }}" data-options="{{ variant.options | join: '||' | escape }}" {% if variant.id == current_variant.id %}selected{% endif %} {% unless variant.available %}disabled{% endunless %}>
+                {{ variant.title }}{% unless variant.available %} — {{ 'products.product.sold_out' | t }}{% endunless %}
+              </option>
+            {%- endfor -%}
+          </select>
+
+          <div class="product-form__option product-form__option--placeholder">
+            <label>{{ 'products.product.finish_placeholder' | t }}</label>
+            <select disabled aria-disabled="true">
+              <option>{{ 'products.product.coming_soon' | t }}</option>
+            </select>
+          </div>
+
+          {%- render 'sample-request-button', product: product -%}
+
+          <div class="product-form__buy">
+            <div class="quantity-stepper quantity-stepper--form">
+              <button type="button" data-qty-decrease aria-label="{{ 'general.cart.decrease_quantity' | t }}">{%- render 'icon', name: 'minus' -%}</button>
+              <input type="number" name="quantity" value="1" min="1" inputmode="numeric" data-qty-input aria-label="{{ 'products.product.quantity' | t }}">
+              <button type="button" data-qty-increase aria-label="{{ 'general.cart.increase_quantity' | t }}">{%- render 'icon', name: 'plus' -%}</button>
+            </div>
+            <button
+              type="submit"
+              class="button button--accent button--full"
+              data-add-to-cart
+              data-label-add="{{ 'products.product.add_to_cart' | t }}"
+              data-label-sold-out="{{ 'products.product.sold_out' | t }}"
+              data-label-adding="{{ 'products.product.adding' | t }}"
+              {% unless current_variant.available %}disabled{% endunless %}
+            >
+              <span data-add-to-cart-text>
+                {%- if current_variant.available -%}{{ 'products.product.add_to_cart' | t }}{%- else -%}{{ 'products.product.sold_out' | t }}{%- endif -%}
+              </span>
+            </button>
+          </div>
+        </form>
+
+        {%- render 'product-details-accordion', product: product, printing_info: section.settings.printing_info, shipping_info: section.settings.shipping_info, returns_info: section.settings.returns_info -%}
+      </div>
+    </div>
+  </div>
+
+  {%- render 'related-artworks', product: product -%}
+</div>
+
+<div class="sticky-atc" data-sticky-atc hidden>
+  <div class="container sticky-atc__inner">
+    <div class="sticky-atc__info">
+      <span class="sticky-atc__title">{{ product.title }}</span>
+      <span data-sticky-atc-price>{%- render 'price-display', target: current_variant -%}</span>
+    </div>
+    <button type="button" class="button button--accent" data-sticky-atc-button {% unless current_variant.available %}disabled{% endunless %}>
+      <span data-sticky-atc-text>
+        {%- if current_variant.available -%}{{ 'products.product.add_to_cart' | t }}{%- else -%}{{ 'products.product.sold_out' | t }}{%- endif -%}
+      </span>
+    </button>
+  </div>
+</div>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": {{ product.title | json }},
+  "description": {{ product.description | strip_html | json }},
+  "sku": {{ current_variant.sku | json }},
+  {%- if product.featured_image -%}
+  "image": [{{ product.featured_image | image_url: width: 1200 | prepend: "https:" | json }}],
+  {%- endif -%}
+  "brand": { "@type": "Brand", "name": {{ shop.name | json }} },
+  "offers": {
+    "@type": "Offer",
+    "url": {{ request.origin | append: product.url | json }},
+    "priceCurrency": {{ cart.currency.iso_code | json }},
+    "price": {{ current_variant.price | divided_by: 100.0 | json }},
+    "availability": "https://schema.org/{% if current_variant.available %}InStock{% else %}OutOfStock{% endif %}"
+  }
+}
+</script>
+
+{%- stylesheet -%}
+.product__layout{display:grid;gap:2.5rem;grid-template-columns:1fr;}
+
+.product-gallery__track{
+  display:flex;overflow-x:auto;scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none;border-radius:var(--radius-image);
+}
+.product-gallery__track::-webkit-scrollbar{display:none;}
+.product-gallery__slide{
+  flex:0 0 100%;scroll-snap-align:center;aspect-ratio:4/5;
+  background:var(--color-bg-alt);overflow:hidden;
+}
+.product-gallery__slide img,.product-gallery__slide video{width:100%;height:100%;object-fit:cover;}
+.product-gallery__dots{display:flex;justify-content:center;gap:.5rem;margin-top:1rem;}
+.product-gallery__dot{width:8px;height:8px;border-radius:50%;border:none;padding:0;background:var(--color-border);cursor:pointer;}
+.product-gallery__dot.is-active{background:var(--color-text);}
+.product-gallery__thumbs{display:none;}
+@media (min-width:900px){
+  .product-gallery{display:grid;grid-template-columns:72px 1fr;gap:1rem;align-items:start;}
+  .product-gallery__track{order:2;border-radius:var(--radius-image);}
+  .product-gallery__dots{display:none;}
+  .product-gallery__thumbs{
+    order:1;display:flex;flex-direction:column;gap:.6rem;
+    max-height:640px;overflow-y:auto;
+  }
+  .product-gallery__thumb{
+    border:1.5px solid transparent;border-radius:var(--radius-image);
+    overflow:hidden;padding:0;cursor:pointer;aspect-ratio:4/5;background:var(--color-bg-alt);
+  }
+  .product-gallery__thumb img{width:100%;height:100%;object-fit:cover;}
+  .product-gallery__thumb.is-active{border-color:var(--color-text);}
+}
+.product__title{margin:.4em 0 .3em;}
+.product-price--main{font-size:1.3rem;margin-bottom:1.5rem;}
+
+.js [data-variant-select]{
+  position:absolute !important;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;
+}
+.no-js .product-form__option .option-buttons{display:none;}
+.no-js [data-variant-select]{
+  width:100%;max-width:280px;padding:.85em 1em;margin-bottom:1.5rem;
+  border:var(--border-width) solid var(--color-border);border-radius:var(--radius-button);
+  background:var(--color-surface);font-family:inherit;font-size:1rem;color:var(--color-text);
+}
+
+.product-form__option{margin-bottom:1.5rem;}
+.product-form__option label{display:block;font-size:.8rem;color:var(--color-text-muted);margin-bottom:.6rem;}
+.option-buttons{display:flex;flex-wrap:wrap;gap:.6rem;}
+.option-button{
+  min-width:44px;min-height:44px;padding:0 1.1em;
+  border:var(--border-width) solid var(--color-border);
+  border-radius:var(--radius-button);
+  background:var(--color-surface);cursor:pointer;font-size:.9rem;
+}
+.option-button.is-selected{border-color:var(--color-text);background:var(--color-text);color:var(--color-bg);}
+.option-button:disabled{opacity:.4;cursor:not-allowed;text-decoration:line-through;}
+.product-form__option--placeholder select{
+  width:100%;max-width:280px;padding:.85em 1em;
+  border:var(--border-width) dashed var(--color-border);
+  border-radius:var(--radius-button);background:var(--color-bg-alt);color:var(--color-text-muted);
+}
+
+.sample-request{margin:1.5rem 0;}
+.sample-request__note{font-size:.8rem;color:var(--color-text-muted);margin-top:.5rem;}
+
+.product-form__buy{display:flex;gap:1rem;margin-top:2rem;align-items:stretch;}
+.quantity-stepper--form{flex-shrink:0;border:var(--border-width) solid var(--color-border);border-radius:var(--radius-button);display:flex;align-items:center;}
+.quantity-stepper--form button{width:44px;height:44px;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.quantity-stepper--form button svg{width:14px;height:14px;}
+.quantity-stepper--form input{
+  width:44px;border:none;text-align:center;font-size:1rem;background:none;color:var(--color-text);
+  -moz-appearance:textfield;
+}
+.quantity-stepper--form input::-webkit-outer-spin-button,
+.quantity-stepper--form input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+.product-form__buy .button{flex:1;min-height:44px;}
+
+.product-accordion{margin-top:2.5rem;}
+.product-accordion__facts{display:grid;grid-template-columns:auto 1fr;gap:.4em 1em;margin-top:1em;font-size:.9rem;}
+.product-accordion__facts dt{color:var(--color-text-muted);}
+.product-accordion__facts dd{margin:0;}
+
+.sticky-atc{
+  position:fixed;left:0;right:0;bottom:0;z-index:60;
+  background:var(--color-surface);border-top:var(--border-width) solid var(--color-border);
+  padding:.75rem 20px;box-shadow:0 -4px 16px rgba(0,0,0,.06);
+}
+.sticky-atc__inner{display:flex;align-items:center;justify-content:space-between;gap:1rem;max-width:var(--page-width);margin:0 auto;}
+.sticky-atc__info{display:flex;flex-direction:column;min-width:0;}
+.sticky-atc__title{font-size:.8rem;color:var(--color-text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sticky-atc.is-visible{display:block;}
+@media (min-width:900px){
+  .sticky-atc{display:none !important;}
+  .product__layout{grid-template-columns:1.1fr 1fr;gap:3.5rem;}
+}
+{%- endstylesheet -%}
+
+{%- javascript -%}
+(function () {
+  document.querySelectorAll('[data-product-form]').forEach(function (form) {
+    var root = form.closest('.product') || document;
+    var productJSONEl = root.querySelector('[data-product-json]');
+    var product = productJSONEl ? JSON.parse(productJSONEl.textContent) : null;
+    var select = form.querySelector('[data-variant-select]');
+    var priceContainer = root.querySelector('[data-product-price]');
+    var priceTemplates = root.querySelector('[data-variant-price-templates]');
+    var addButton = form.querySelector('[data-add-to-cart]');
+    var addButtonText = form.querySelector('[data-add-to-cart-text]');
+    var qtyInput = form.querySelector('[data-qty-input]');
+    var stickyBar = document.querySelector('[data-sticky-atc]');
+    var stickyPrice = stickyBar ? stickyBar.querySelector('[data-sticky-atc-price]') : null;
+    var stickyButton = stickyBar ? stickyBar.querySelector('[data-sticky-atc-button]') : null;
+
+    var stickyText = stickyButton ? stickyButton.querySelector('[data-sticky-atc-text]') : null;
+    var labelAdd = addButton.getAttribute('data-label-add');
+    var labelSoldOut = addButton.getAttribute('data-label-sold-out');
+
+    function findVariant(id) {
+      return product.variants.find(function (v) { return v.id === parseInt(id, 10); });
+    }
+
+    function setButtonState(available) {
+      var label = available ? labelAdd : labelSoldOut;
+      addButton.disabled = !available;
+      addButtonText.textContent = label;
+      if (stickyButton) stickyButton.disabled = !available;
+      if (stickyText) stickyText.textContent = label;
+    }
+
+    function updateForVariant(variant) {
+      if (!variant) return;
+      select.value = variant.id;
+      var template = priceTemplates ? priceTemplates.querySelector('[data-variant-id="' + variant.id + '"]') : null;
+      if (template && priceContainer) priceContainer.innerHTML = template.innerHTML;
+      if (template && stickyPrice) stickyPrice.innerHTML = template.innerHTML;
+      setButtonState(variant.available);
+      if (window.history && window.history.replaceState) {
+        var url = new URL(window.location.href);
+        url.searchParams.set('variant', variant.id);
+        window.history.replaceState({}, '', url);
+      }
+      document.dispatchEvent(new CustomEvent('product:variant-change', { detail: { variant: variant } }));
+    }
+
+    form.querySelectorAll('[data-option-position]').forEach(function (group) {
+      group.querySelectorAll('.option-button').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          group.querySelectorAll('.option-button').forEach(function (b) { b.classList.remove('is-selected'); });
+          btn.classList.add('is-selected');
+          var selected = [];
+          form.querySelectorAll('[data-option-position]').forEach(function (g) {
+            var active = g.querySelector('.is-selected');
+            selected.push(active ? active.getAttribute('data-option-value') : null);
+          });
+          var variant = product.variants.find(function (v) {
+            return v.options.every(function (opt, i) { return opt === selected[i]; });
+          });
+          if (variant) updateForVariant(variant);
+        });
+      });
+    });
+
+    if (qtyInput) {
+      form.querySelectorAll('[data-qty-decrease],[data-qty-increase]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var current = parseInt(qtyInput.value, 10) || 1;
+          var next = btn.hasAttribute('data-qty-increase') ? current + 1 : Math.max(1, current - 1);
+          qtyInput.value = next;
+        });
+      });
+    }
+
+    function submitAddToCart() {
+      if (addButton.disabled) return;
+      var labelAdding = addButton.getAttribute('data-label-adding');
+      addButton.disabled = true;
+      if (stickyButton) stickyButton.disabled = true;
+      addButtonText.textContent = labelAdding;
+      if (stickyText) stickyText.textContent = labelAdding;
+      window.CartAPI.add([{ id: parseInt(select.value, 10), quantity: parseInt(qtyInput.value, 10) || 1 }])
+        .then(function () {
+          var variant = findVariant(select.value);
+          setButtonState(variant ? variant.available : true);
+        })
+        .catch(function () {
+          var variant = findVariant(select.value);
+          setButtonState(variant ? variant.available : true);
+        });
+    }
+
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      submitAddToCart();
+    });
+    if (stickyButton) {
+      stickyButton.addEventListener('click', submitAddToCart);
+    }
+
+    if (addButton && stickyBar && 'IntersectionObserver' in window) {
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          stickyBar.hidden = entry.isIntersecting;
+        });
+      }, { threshold: 0 });
+      observer.observe(addButton);
+    }
+  });
+
+  document.querySelectorAll('[data-product-gallery]').forEach(function (gallery) {
+    var track = gallery.querySelector('[data-gallery-track]');
+    var slides = gallery.querySelectorAll('[data-gallery-slide]');
+    var dots = gallery.querySelectorAll('[data-gallery-dot], .product-gallery__dot');
+    var thumbs = gallery.querySelectorAll('.product-gallery__thumb');
+
+    function goTo(index) {
+      var slide = slides[index];
+      if (!slide || !track) return;
+      track.scrollTo({ left: slide.offsetLeft, behavior: 'smooth' });
+    }
+
+    gallery.querySelectorAll('[data-gallery-goto]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        goTo(parseInt(btn.getAttribute('data-gallery-goto'), 10));
+      });
+    });
+
+    if ('IntersectionObserver' in window && track) {
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            var index = entry.target.getAttribute('data-index');
+            dots.forEach(function (d) { d.classList.remove('is-active'); });
+            thumbs.forEach(function (t) { t.classList.remove('is-active'); });
+            var activeDot = gallery.querySelectorAll('[data-gallery-goto="' + index + '"]');
+            activeDot.forEach(function (el) { el.classList.add('is-active'); });
+          }
+        });
+      }, { root: track, threshold: 0.6 });
+      slides.forEach(function (slide) { observer.observe(slide); });
+    }
+
+    document.addEventListener('product:variant-change', function (event) {
+      var variant = event.detail.variant;
+      if (!variant || !variant.featured_image) return;
+      var index = Array.prototype.findIndex.call(slides, function (slide) {
+        return parseInt(slide.getAttribute('data-media-id'), 10) === variant.featured_image.id;
+      });
+      if (index > -1) goTo(index);
+    });
+  });
+})();
+{%- endjavascript -%}
+
+{% schema %}
+{
+  "name": "Página de producto",
+  "settings": [
+    { "type": "richtext", "id": "printing_info", "label": "Información de impresión", "default": "<p>Impresión giclée sobre papel de algodón 100% ácido-free, con tintas pigmentadas de alta durabilidad.</p>" },
+    { "type": "richtext", "id": "shipping_info", "label": "Información de envío", "default": "<p>Envíos asegurados en embalaje rígido. Plazo estimado de preparación: 3-5 días laborables.</p>" },
+    { "type": "richtext", "id": "returns_info", "label": "Información de devoluciones", "default": "<p>Dispones de 14 días desde la recepción para solicitar una devolución en piezas no personalizadas.</p>" }
+  ]
+}
+{% endschema %}

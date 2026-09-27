@@ -1,0 +1,18 @@
+{%- comment -%}
+  Parámetro requerido: product
+  Muestra "Pieza única" para Originales o "Edición limitada" si el metafield lo indica.
+{%- endcomment -%}
+{%- liquid
+  assign edition_size = product.metafields.custom.edition_size.value
+-%}
+{%- if product.type == 'Original' -%}
+  <span class="badge artwork-badge artwork-badge--original">{{ 'products.product.original_badge' | t }}</span>
+{%- elsif product.metafields.custom.limited_edition.value -%}
+  <span class="badge badge--outline artwork-badge artwork-badge--limited">
+    {%- if edition_size -%}
+      {{ 'products.product.edition_of' | t: size: edition_size }}
+    {%- else -%}
+      {{ 'products.product.limited_badge' | t }}
+    {%- endif -%}
+  </span>
+{%- endif -%}

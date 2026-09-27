@@ -1,0 +1,67 @@
+{%- liquid
+  assign heading = section.settings.heading
+  if heading == blank
+    assign heading = 'sections.shop_by_type.heading' | t
+  endif
+-%}
+<section class="shop-by-type section-padding">
+  <div class="container">
+    <div class="section-heading section-heading--center">
+      <h2>{{ heading }}</h2>
+    </div>
+    <div class="shop-by-type__grid">
+      {%- for block in section.blocks -%}
+        <a href="{{ block.settings.link }}" class="shop-by-type__tile" {{ block.shopify_attributes }}>
+          <div class="shop-by-type__media media media--landscape">
+            {%- if block.settings.image -%}
+              <img src="{{ block.settings.image | image_url: width: 900 }}" alt="{{ block.settings.title | escape }}" loading="lazy" width="900" height="{{ 900 | divided_by: block.settings.image.aspect_ratio | default: 560 }}">
+            {%- endif -%}
+          </div>
+          <h3 class="shop-by-type__title">{{ block.settings.title }}</h3>
+          <p class="shop-by-type__subtitle">{{ block.settings.subtitle }}</p>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{%- stylesheet -%}
+.section-heading--center{text-align:center;margin-left:auto;margin-right:auto;}
+.shop-by-type__grid{display:grid;gap:var(--grid-gap);grid-template-columns:repeat(auto-fit,minmax(280px,1fr));}
+.shop-by-type__tile{display:block;color:var(--color-text);}
+.shop-by-type__media{margin-bottom:1rem;transition:opacity .2s ease;}
+.shop-by-type__tile:hover .shop-by-type__media{opacity:.85;}
+.shop-by-type__title{margin-bottom:.25em;}
+.shop-by-type__subtitle{color:var(--color-text-muted);margin:0;}
+{%- endstylesheet -%}
+
+{% schema %}
+{
+  "name": "Comprar por tipo",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Título de la sección" }
+  ],
+  "blocks": [
+    {
+      "type": "type_tile",
+      "name": "Categoría",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Imagen" },
+        { "type": "text", "id": "title", "label": "Título" },
+        { "type": "text", "id": "subtitle", "label": "Subtítulo" },
+        { "type": "url", "id": "link", "label": "Enlace" }
+      ]
+    }
+  ],
+  "max_blocks": 3,
+  "presets": [
+    {
+      "name": "Comprar por tipo",
+      "blocks": [
+        { "type": "type_tile", "settings": { "title": "Originales", "subtitle": "Pieza única, firmada", "link": "/collections/originals" } },
+        { "type": "type_tile", "settings": { "title": "Fine Art Prints", "subtitle": "Edición cuidada bajo demanda", "link": "/collections/fine-art-prints" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

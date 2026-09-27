@@ -1,0 +1,35 @@
+{%- liquid
+  assign journal_blog = blogs[section.settings.blog]
+  assign heading = section.settings.heading
+  if heading == blank
+    assign heading = 'sections.journal.heading' | t
+  endif
+-%}
+<section class="journal-grid section-padding bg-alt">
+  <div class="container">
+    <div class="section-heading">
+      <h2>{{ heading }}</h2>
+    </div>
+    {%- if journal_blog != blank and journal_blog.articles.size > 0 -%}
+      <div class="grid grid--3">
+        {%- for article in journal_blog.articles limit: section.settings.articles_to_show -%}
+          {%- render 'article-card', article: article -%}
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <div class="empty-state">{{ 'sections.journal.empty' | t }}</div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Journal",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Título" },
+    { "type": "blog", "id": "blog", "label": "Blog", "info": "Selecciona el blog 'Journal'" },
+    { "type": "range", "id": "articles_to_show", "label": "Nº de artículos", "min": 3, "max": 6, "step": 1, "default": 3 }
+  ],
+  "presets": [{ "name": "Journal" }]
+}
+{% endschema %}

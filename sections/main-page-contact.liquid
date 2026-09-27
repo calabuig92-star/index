@@ -1,0 +1,76 @@
+<div class="contact-page section-padding">
+  <div class="container">
+    {%- render 'breadcrumbs' -%}
+    <div class="contact-page__layout">
+      <div class="contact-page__form-col">
+        <h1>{{ page.title }}</h1>
+        {%- if page.content != blank -%}
+          <div class="contact-page__intro">{{ page.content }}</div>
+        {%- endif -%}
+
+        {%- form 'contact', id: 'ContactForm' -%}
+          {%- if form.posted_successfully? -%}
+            <p class="contact-page__success" role="status">{{ 'contact.form.success' | t }}</p>
+          {%- else -%}
+            {%- if form.errors -%}
+              <p class="contact-page__error" role="alert">{{ 'contact.form.error' | t }}</p>
+            {%- endif -%}
+            <div class="field">
+              <label for="ContactFormName">{{ 'contact.form.name' | t }}</label>
+              <input type="text" id="ContactFormName" name="contact[name]" autocomplete="name" required>
+            </div>
+            <div class="field">
+              <label for="ContactFormEmail">{{ 'contact.form.email' | t }}</label>
+              <input type="email" id="ContactFormEmail" name="contact[email]" autocomplete="email" required>
+            </div>
+            <div class="field">
+              <label for="ContactFormMessage">{{ 'contact.form.message' | t }}</label>
+              <textarea id="ContactFormMessage" name="contact[body]" rows="5" required></textarea>
+            </div>
+            <button type="submit" class="button button--primary">{{ 'contact.form.submit' | t }}</button>
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+
+      <div class="contact-page__info-col">
+        {%- if section.settings.info_text != blank -%}
+          <div class="contact-page__info-text">{{ section.settings.info_text }}</div>
+        {%- endif -%}
+        {%- if settings.social_instagram != blank or settings.social_pinterest != blank or settings.social_facebook != blank or settings.social_tiktok != blank -%}
+          <ul class="contact-page__social">
+            {%- if settings.social_instagram != blank -%}<li><a href="{{ settings.social_instagram }}">Instagram</a></li>{%- endif -%}
+            {%- if settings.social_pinterest != blank -%}<li><a href="{{ settings.social_pinterest }}">Pinterest</a></li>{%- endif -%}
+            {%- if settings.social_facebook != blank -%}<li><a href="{{ settings.social_facebook }}">Facebook</a></li>{%- endif -%}
+            {%- if settings.social_tiktok != blank -%}<li><a href="{{ settings.social_tiktok }}">TikTok</a></li>{%- endif -%}
+          </ul>
+        {%- endif -%}
+        {%- if section.settings.faqs_link != blank -%}
+          <a href="{{ section.settings.faqs_link }}" class="link-underline">{{ section.settings.faqs_label }}</a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+{%- stylesheet -%}
+.contact-page__layout{display:grid;gap:2.5rem;grid-template-columns:1fr;max-width:900px;margin:0 auto;}
+.contact-page__intro{color:var(--color-text-muted);margin-bottom:1.5em;}
+.contact-page__success{color:var(--color-secondary);font-weight:600;}
+.contact-page__error{color:var(--color-accent);}
+.contact-page__info-text{color:var(--color-text-muted);margin-bottom:1.5em;}
+.contact-page__social{list-style:none;display:flex;flex-direction:column;gap:.6em;margin-bottom:1.5em;}
+@media (min-width:800px){
+  .contact-page__layout{grid-template-columns:1.3fr 1fr;}
+}
+{%- endstylesheet -%}
+
+{% schema %}
+{
+  "name": "Página — Contacto",
+  "settings": [
+    { "type": "richtext", "id": "info_text", "label": "Texto de contacto", "default": "<p>Respondemos en 1-2 días laborables.</p>" },
+    { "type": "url", "id": "faqs_link", "label": "Enlace a FAQ", "default": "/pages/faqs" },
+    { "type": "text", "id": "faqs_label", "label": "Texto del enlace a FAQ", "default": "Preguntas frecuentes" }
+  ]
+}
+{% endschema %}

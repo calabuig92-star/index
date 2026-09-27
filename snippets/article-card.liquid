@@ -1,0 +1,14 @@
+{%- comment -%} Parámetro requerido: article {%- endcomment -%}
+<article class="article-card">
+  <a href="{{ article.url }}" class="article-card__media media media--landscape">
+    {%- if article.image -%}
+      <img src="{{ article.image | image_url: width: 700 }}" alt="{{ article.image.alt | escape }}" loading="lazy" width="700" height="{{ 700 | divided_by: article.image.aspect_ratio | default: 460 }}">
+    {%- endif -%}
+  </a>
+  <p class="article-card__date">{{ article.published_at | date: '%d %B %Y' }}</p>
+  <h3 class="article-card__title"><a href="{{ article.url }}">{{ article.title }}</a></h3>
+  {%- if article.excerpt_or_content != blank -%}
+    <p class="article-card__excerpt">{{ article.excerpt_or_content | strip_html | truncatewords: 22 }}</p>
+  {%- endif -%}
+  <a href="{{ article.url }}" class="article-card__link link-underline">{{ 'sections.journal.read_more' | t }}</a>
+</article>
